@@ -1,14 +1,20 @@
-module.exports = function(app) {
+module.exports = function(app, swig) {
     app.get("/canciones", function (req, res) {
-        let respuesta = "";
+        let canciones = [{
+            "nombre" : "Blank space",
+            "precio" : "1.2"
+        }, {
+            "nombre" : "See you again",
+            "precio" : "1.3"
+        }, {
+            "nombre" : "Uptown Funk",
+            "precio" : "1.1"
+        }];
 
-        if (req.query.nombre != null) {
-            respuesta += 'Nombre: ' + req.query.autor + '<br>';
-        }
-
-        if (typeof (req.query.autor) != "undefined") {
-            respuesta += 'Autor: ' + req.query.autor;
-        }
+        let respuesta = swig.renderFile('views/btienda.html', {
+            vendedor : 'Tienda de canciones',
+            canciones : canciones
+        });
 
         res.send(respuesta);
     });
@@ -34,4 +40,12 @@ module.exports = function(app) {
     app.post("/cancion", function (req, res) {
         res.send("Canción agregada: " + req.body.nombre + "<br>" + " género: " + req.body.genero + "<br>" + " precio: " + req.body.precio);
     });
+
+    app.get('/canciones/agregar', function (req, res) {
+        let respuesta = swig.renderFile('views/bagregar.html', {
+
+        });
+        res.send(respuesta);
+    })
+
 };
