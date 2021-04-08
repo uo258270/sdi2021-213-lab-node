@@ -25,11 +25,7 @@ module.exports = function(app, swig, gestorBD) {
         res.send(String(respuesta));
     });
 
-    app.get('/canciones/:id', function (req, res) {
-        let respuesta = 'id: ' + req.params.id;
 
-        res.send(respuesta);
-    });
 
     app.get('/canciones/:genero/:id', function (req, res) {
         let respuesta = 'id: ' + req.params.id + '<br>' + 'Género: ' + req.params.genero;
@@ -85,7 +81,7 @@ module.exports = function(app, swig, gestorBD) {
         if( req.query.busqueda != null ){
             criterio = { "nombre" : {$regex : ".*"+req.query.busqueda+".*"} };
         }
-        gestorBD.obtenerCanciones( criterio,function(canciones) {
+        gestorBD.obtenerCanciones(criterio,function(canciones) {
             if (canciones == null) {
                 res.send("Error al listar ");
             } else {
@@ -109,21 +105,21 @@ module.exports = function(app, swig, gestorBD) {
         res.send(respuesta);
     })
 
-    app.get('/cancion/:id', function (req, res) {
-        let criterio = { "_id" :  gestorBD.mongo.ObjectID(req.params.id) };
+
+    app.get('/cancion/modificar/:id', function (req, res) {
+        let criterio = { "_id" : gestorBD.mongo.ObjectID(req.params.id) };
         gestorBD.obtenerCanciones(criterio,function(canciones){
             if ( canciones == null ){
-                res.send("Error al recuperar la canción.");
+                res.send(respuesta);
             } else {
-                let respuesta = swig.renderFile('views/bcancion.html',
+                let respuesta = swig.renderFile('views/bcancionModificar.html',
                     {
                         cancion : canciones[0]
                     });
                 res.send(respuesta);
             }
         });
-    });
-
+    })
 
     app.post('/cancion/modificar/:id', function (req, res) {
         let id = req.params.id;
@@ -137,7 +133,6 @@ module.exports = function(app, swig, gestorBD) {
             if (result == null) {
                 res.send("Error al modificar ");
             } else {
-                res.send("Modificado "+result);
                 paso1ModificarPortada(req.files, id, function (result) {
                     if( result == null){
                         res.send("Error en la modificación");
@@ -178,6 +173,33 @@ module.exports = function(app, swig, gestorBD) {
         }
     };
 
+    app.get('/cancion/:id', function (req, res) {
+        let criterio = { "_id" :  gestorBD.mongo.ObjectID(req.params.id) };
+        let criterioComentarios = {"cancion_id": gestorBD.mongo.ObjectID(req.params.id)};
+        gestorBD.obtenerCanciones(criterio,function(canciones){
+            if ( canciones == null ){
+                res.send("Error al recuperar la canción.");
+            } else {
+                gestorBD.obtenerComentarios(criterioComentarios, function (comments) {
+                    if(comments != null){
+                        let respuesta = swig.renderFile('views/bcancion.html',
+                            {
+                                cancion: canciones[0],
+                                comentarios: comments
+                            });
+                        res.send(respuesta);
+                    }
+                });
+            }
+        });
+    });
+
+
+    app.get('/canciones/:id', function (req, res) {
+        let respuesta = 'id: ' + req.params.id;
+
+        res.send(respuesta);
+    });
 
 
 };
