@@ -71,6 +71,13 @@ module.exports = function(app, swig, gestorBD) {
         });
     });
 
+    app.get("/error", function (req, res) {
+        let respuesta = swig.renderFile('views/error.html', {
+            error: "Error"
+        });
+        res.send(respuesta);
+    });
+
 
 
 

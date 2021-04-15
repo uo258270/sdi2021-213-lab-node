@@ -43,6 +43,9 @@
   <script>
     var mensaje = getUrlParameter('mensaje');
     var tipoMensaje = getUrlParameter('tipoMensaje');
+
+    console.log("mensaje1: " + mensaje);
+    console.log("tipoMensaje: " + tipoMensaje);
     // Otra forma de recuperar los parametros de la url pero no compatible con IE
     /* const params = new URLSearchParams(location.search);
     var mensaje = params.get("mensaje");

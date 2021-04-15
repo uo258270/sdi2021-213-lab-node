@@ -226,7 +226,8 @@ module.exports = function(app, swig, gestorBD) {
                         }
                     });
                 } else {
-                    res.redirect('/cancion/' + cancionId + "?mensaje=No se puede comprar la cancion" + "&tipoMensaje=alert-danger");
+                    //res.redirect('/cancion/' + cancionId + "?mensaje=No se puede comprar la cancion" + "&tipoMensaje=alert-danger");
+                    res.redirect("/error");
                 }
             })
     });
