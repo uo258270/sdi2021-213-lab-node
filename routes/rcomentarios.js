@@ -1,4 +1,11 @@
 module.exports = function (app, swig, gestorBD) {
+
+
+
+    app.get("/comentario/borrar/:id", function(req, res) {
+
+
+    });
     app.post("/cancion/:id", function (req, res) {
         if (req.session.usuario == null) {
             res.redirect("/identificarse");

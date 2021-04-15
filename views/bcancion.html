@@ -46,6 +46,7 @@
 			<h4 class="media-heading">{{comentario.autor}}</h4>
 			{{comentario.texto}}
 		</div>
+		<a href="/comentario/eliminar/{{ comentario._id.toString() }}">Eliminar</a> <br>
 	</div>
 
 	{% endfor %}
