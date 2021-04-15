@@ -26,8 +26,15 @@ module.exports = function(app, swig, gestorBD) {
         });
     });
     app.get("/identificarse", function(req, res) {
-        let respuesta = swig.renderFile('views/bidentificacion.html', {});
-        res.send(respuesta);
+        if (req.session.error != null) {
+            let respuesta = swig.renderFile('views/bidentificacion.html', {
+                errorT: req.session.error
+            });
+            res.send(respuesta);
+        } else {
+            let respuesta = swig.renderFile('views/bidentificacion.html', {});
+            res.send(respuesta);
+        }
     });
 
     app.post("/identificarse", function(req, res) {
@@ -40,11 +47,16 @@ module.exports = function(app, swig, gestorBD) {
         gestorBD.obtenerUsuarios(criterio, function(usuarios) {
             if (usuarios == null || usuarios.length == 0) {
                 req.session.usuario = null;
-                res.redirect("/identificarse" +
-                    "?mensaje=Email o password incorrecto"+
-                    "&tipoMensaje=alert-danger ");
+                let errorT = {
+                    tipoMensaje: "alert-danger",
+                    mensaje: "Email o password incorrecto"
+                };
+
+                req.session.error = errorT;
+                res.redirect("/identificarse");
             } else {
                 req.session.usuario = usuarios[0].email;
+                req.session.error = null;
                 res.redirect("/publicaciones");
             }
         });
