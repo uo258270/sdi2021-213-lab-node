@@ -56,7 +56,7 @@ routerUsuarioAutor.use(function(req, res, next) {
     gestorBD.obtenerCanciones(
         {_id: mongo.ObjectID(id) }, function (canciones) {
             console.log(canciones[0]);
-            if(canciones[0].autor == req.session.usuario ){
+            if(canciones[0].autor === req.session.usuario ){
                 next();
             } else {
                 res.redirect("/tienda");
@@ -77,7 +77,7 @@ routerAudios.use(function(req, res, next) {
     let idCancion = path.basename(req.originalUrl, '.mp3');
     gestorBD.obtenerCanciones(
         {"_id": mongo.ObjectID(idCancion) }, function (canciones) {
-            if(req.session.usuario && canciones[0].autor == req.session.usuario ){
+            if(req.session.usuario && canciones[0].autor === req.session.usuario ){
                 next();
             } else {
                 let criterio = {
@@ -114,6 +114,7 @@ require("./routes/rusuarios.js")(app, swig, gestorBD); // (app, param1, param2, 
 require("./routes/rcanciones.js")(app, swig, gestorBD); // (app, param1, param2, etc.)
 require("./routes/rautores.js")(app, swig, gestorBD);
 require("./routes/rcomentarios.js")(app,swig, gestorBD);
+require("./routes/rapicanciones.js")(app, gestorBD);
 
 app.get('/', function (req, res) {
     res.redirect('/tienda');
