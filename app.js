@@ -42,6 +42,7 @@ let gestorBD = require("./modules/gestorBD.js");
 gestorBD.init(app,mongo);
 
 
+
 // routerUsuarioToken
 let routerUsuarioToken = express.Router();
 routerUsuarioToken.use(function(req, res, next) {
