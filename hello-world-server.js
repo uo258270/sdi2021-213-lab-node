@@ -14,6 +14,7 @@ app.get('/memoria', function(req, res){
         });
 
     }, 10000);
+
 });
 app.listen(puerto, function() {
     console.log("Servidor listo "+puerto);
