@@ -1,6 +1,18 @@
 module.exports = function(app, gestorBD) {
 
-
+    app.get("/api/cancion", function (req, res) {
+        gestorBD.obtenerCanciones({}, function (canciones) {
+            if (canciones == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error"
+                })
+            } else {
+                res.status(200);
+                res.send(JSON.stringify(canciones));
+            }
+        });
+    });
 
     app.get("/api/cancion/:id", function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
@@ -39,22 +51,29 @@ module.exports = function(app, gestorBD) {
             precio : req.body.precio,
         }
         // ¿Validar nombre, genero, precio?
-
-        gestorBD.insertarCancion(cancion, function(id){
-            if (id == null) {
-                res.status(500);
+        validarDatos(cancion, function(errors) {
+            if (errors !== null && errors.length > 0) {
+                res.status(403);
                 res.json({
-                    error : "se ha producido un error"
+                    errores: errors
                 })
             } else {
-                res.status(201);
-                res.json({
-                    mensaje : "canción insertada",
-                    _id : id
-                })
+                gestorBD.insertarCancion(cancion, function (id) {
+                    if (id == null) {
+                        res.status(500);
+                        res.json({
+                            error: "se ha producido un error"
+                        })
+                    } else {
+                        res.status(201);
+                        res.json({
+                            mensaje: "canción insertada",
+                            _id: id
+                        })
+                    }
+                });
             }
-        });
-
+        })
     });
     app.put("/api/cancion/:id", function(req, res) {
 
@@ -93,7 +112,7 @@ module.exports = function(app, gestorBD) {
         }
 
         gestorBD.obtenerUsuarios(criterio, function(usuarios){
-            if(usuarios ==null || usuarios.length ==0){
+            if(usuarios ==null || usuarios.length ===0){
                 res.status(401); //unathorized
                 res.json({
                     autenticado: false
@@ -112,17 +131,22 @@ module.exports = function(app, gestorBD) {
         })
     });
 
-    app.get("/api/cancion", function (req, res) {
-        gestorBD.obtenerCanciones({}, function (canciones) {
-            if (canciones == null) {
-                res.status(500);
-                res.json({
-                    error: "se ha producido un error"
-                })
-            } else {
-                res.status(200);
-                res.send(JSON.stringify(canciones));
-            }
-        });
-    });
+
+
+
+    function validarDatos(cancion, functioncallback){
+        let errors = [];
+        if(cancion.nombre==null || typeof cancion.nombre == 'undefined' || cancion.nombre === "")
+            errors.push("El nombre de la cancion no puede estar vacio");
+        if(cancion.genero==null || typeof cancion.genero == 'undefined' || cancion.genero === "")
+            errors.push("El genero de la cancion no puede estar vacio");
+        if(cancion.precio==null || typeof cancion.precio == 'undefined' || cancion.precio < 0 || cancion.precio==="")
+            errors.push("El precio de la cancion no puede ser menor que 0");
+        if(errors.length<=0)
+            functioncallback(null);
+        else{
+            functioncallback(errors);
+        }
+    }
+
 }

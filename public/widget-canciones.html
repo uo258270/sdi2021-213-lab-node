@@ -96,13 +96,14 @@
 
     var precioDsc = true;
 
-    function ordenarPorPrecio() {
-        if (precioDsc) {
-            canciones.sort(function (a, b) {
+    function ordenarPorPrecio(){
+        if (precioDsc){
+            canciones.sort(function(a, b) {
                 return parseFloat(a.precio) - parseFloat(b.precio);
             });
         } else {
-            canciones.sort(function (a, b) {
+            canciones.sort(function(a, b) {
+
                 return parseFloat(b.precio) - parseFloat(a.precio);
             });
         }
@@ -110,20 +111,14 @@
         precioDsc = !precioDsc; //invertir
     }
 
-    var nombreDsc = true;
 
-    function ordenarPorNombre() {
-        if (nombreDsc) {
-            canciones.sort(function (a, b) {
-                return 1;
-            });
-        } else {
-            canciones.sort(function (a, b) {
-                return -1;
-            });
-        }
+    function ordenarPorNombre(){
+        canciones.sort(function(a, b) {
+            if(a.nombre > b.nombre ) return 1;
+            if(a.nombre < b.nombre ) return -1;
+            return 0;
+        });
         actualizarTabla(canciones);
-        nombreDsc = !nombreDsc; //invertir
     }
 
     $('#filtro-nombre').on('input',function(e){

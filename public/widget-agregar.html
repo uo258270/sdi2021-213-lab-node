@@ -54,7 +54,20 @@
 
             },
             error: function (error) {
-                $("#contenedor-principal").load("widget-login.html");
+                let errores = (typeof error.responseJSON.errores == "undefined") ? null : error.responseJSON.errores;
+                if(errores != null && errores.length >0){
+                    $("#widget-agregar")
+                    .prepend("<div id = 'div-errores' class='alert aler-danger'><ul id ='ul-errores'></ul></div>");
+                    for(i =0; i<errores.length; i++){
+                        $("#ul-errores").append("<li>" + errores[i] + "</li>");
+                    }
+                }
+                else{
+                    $("#widget-agregar")
+                    .prepend(<div id='div-errores' className='alert aler-danger'>Se ha producido un error</div>);
+                }
+                $("#div-errores").show();
+               // $("#contenedor-principal").load("widget-login.html");
             }
         });
     }
